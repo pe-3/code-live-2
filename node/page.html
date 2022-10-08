@@ -1,0 +1,85 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        document.domain = '192.168.1.248'
+        function getConsole(console) {
+            window.console = console;
+        }
+    </script>
+</head>
+
+<body>
+    <div class="$.code_wrapper"></div>
+    <script>
+        const htmlCodeWrapper = document.getElementsByClassName('$.code_wrapper')[0];
+        const codeEle = {
+            css: document.createElement('style'),
+            html: '',
+            js: ''
+        };
+        document.head.appendChild(codeEle.css);
+    </script>
+    <script>
+        function parseChange(previous, change) {
+            if (typeof previous !== 'string') {
+                throw new Error('previous should be a string');
+            }
+            // 1.解析change对象
+            const { changes } = change;
+            // 2.根据解析的内容分割重组字符串
+            const codePartArr = [];
+            const { changeRange: { fromA: sFromA } } = changes[0];
+            codePartArr.push(previous.slice(0, sFromA));
+
+            for (let i = 0; i < changes.length - 1; i++) {
+                const { changeRange: { toA: cToA }, insertStr } = changes[i];
+                const { changeRange: { fromA: nFromA } } = changes[i + 1];
+                codePartArr.push(insertStr);
+                codePartArr.push(previous.slice(cToA, nFromA));
+            }
+
+            const { changeRange: { toA: lToA }, insertStr } = changes[changes.length - 1];
+            codePartArr.push(insertStr);
+            codePartArr.push(previous.slice(lToA));
+            return codePartArr.join('');
+        }
+    </script>
+    <script>
+        const scoketPath = document.location.href.replace('page', 'socket').replace('http', 'ws');
+        const socket = new WebSocket(scoketPath);
+        socket.addEventListener('message', (event) => {
+            const data = JSON.parse(event.data);
+            if (data.code) {
+                codeEle.css.innerHTML = data.code.css;
+                codeEle.html = data.code.html;
+                codeEle.js = data.code.js;
+                htmlCodeWrapper.innerHTML = codeEle.html;
+            }
+            if (data.changes) {
+                if (data.type === 'html') {
+                    codeEle.html = parseChange(codeEle.html, data);
+                    htmlCodeWrapper.innerHTML = codeEle.html;
+                } else if (data.type === 'css') {
+                    codeEle.css.innerHTML = parseChange(codeEle.css.innerHTML, data);
+                } else {
+                    codeEle.js = parseChange(codeEle.js, data);
+                }
+            }
+            if (codeEle.js.match('run-code')) {
+                try {
+                    eval(codeEle.js)
+                } catch (error) {
+                    console.warn(error);
+                }
+            }
+        })
+    </script>
+
+</body>
+
+</html>
