@@ -1,5 +1,5 @@
 import { sublime } from '@uiw/codemirror-theme-sublime';
-import { useState, useEffect, Fragment } from 'react';
+import { useState, useEffect} from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 import ScrollBar from "./ScrollBar";
 import { codeins } from '../code-edit/code';

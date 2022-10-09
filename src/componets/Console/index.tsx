@@ -7,7 +7,7 @@ export default function Console() {
     const [msgs, setMsgs] = useState<{ text: string, type: string }[]>([]);
     useEffect(() => {
         const listener = (msg: { text: string, type: string }) => {
-            setMsgs((msgs) => [...msgs, msg]);
+            setMsgs((msgs) => [msg, ...msgs]);
         }
         const clear = () => {
             setMsgs([]);
@@ -29,7 +29,9 @@ export default function Console() {
                 </div>
                 <ScrollBar className="console-msgs">
                     {msgs.map((item, key) => {
-                        return (<p className={`console-msg console-${item.type}`} key={key}>{item.text}</p>)
+                        return (<p className={`console-msg console-${item.type}`} key={key}>
+                            {key === 0 ? (<span className='symbol'></span>) : ''}{item.text}
+                        </p>)
                     })}
                 </ScrollBar>
             </div>
@@ -39,7 +41,7 @@ export default function Console() {
                     <span className="iconfont icon-warn console-icon">0</span>
                 </div>
                 <div className="console-right-icons">
-                    <span className="iconfont icon-github console-icon"></span>
+                    <span className="iconfont icon-github console-icon" onClick={() => { window.open("https://github.com/pe-3/code-live-2", '_blank') }}></span>
                     {/* <span className="iconfont icon-bell console-icon"></span> */}
                     {/* <span className="iconfont icon-set console-icon"></span> */}
                 </div>

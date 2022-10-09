@@ -113,6 +113,27 @@
     line-height: 1.1rem;
 }
 
-.console-warn{
+.console-warn {
     color: #F76560;
+}
+
+.symbol {
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+    background-color: #303841;
+    box-sizing: border-box;
+    border: 1px solid #1976d2;
+    margin-right: 1rem;
+    animation: rotate 3s ease-in-out infinite;
+}
+
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }

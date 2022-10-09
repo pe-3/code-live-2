@@ -51,4 +51,4 @@ function App() {
 
 export default App;
 
-document.domain = '192.168.1.248'
+document.domain = window.location.hostname
